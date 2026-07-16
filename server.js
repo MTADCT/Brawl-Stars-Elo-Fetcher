@@ -21,6 +21,8 @@ app.get("/elo/:tag", async (req, res) => {
             /HIGHEST[\s\S]*?\((\d+)\)/
         );
 
+        res.setHeader("Access-Control-Allow-Origin", "*");
+
         res.json({
             current: currentMatch?.[1] || null,
             highest: highestMatch?.[1] || null
