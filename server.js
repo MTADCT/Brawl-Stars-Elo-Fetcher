@@ -5,6 +5,13 @@ console.log("SERVER VERSION 2 WITH CORS TEST");
 
 const app = express();
 
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, OPTIONS");
+    res.header("Access-Control-Allow-Headers", "Content-Type");
+    next();
+});
+
 app.get("/elo/:tag", async (req, res) => {
     try {
         const tag = req.params.tag;
