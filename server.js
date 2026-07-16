@@ -1,6 +1,8 @@
 const express = require("express");
 const axios = require("axios");
 
+console.log("SERVER VERSION 2 WITH CORS TEST");
+
 const app = express();
 
 app.get("/elo/:tag", async (req, res) => {
