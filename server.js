@@ -29,6 +29,8 @@ app.get("/elo/:tag", async (req, res) => {
         });
 
     } catch (err) {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+
         res.status(500).json({
             error: err.message
         });
