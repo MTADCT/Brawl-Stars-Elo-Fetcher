@@ -1,14 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 
-console.log("SERVER VERSION 2 WITH CORS TEST");
-
 const app = express();
-
-app.use((req, res, next) => {
-    res.setHeader("Test-Header", "HELLO_WORLD");
-    next();
-});
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -35,11 +28,25 @@ app.get("/elo/:tag", async (req, res) => {
             /HIGHEST[\s\S]*?\((\d+)\)/
         );
 
+        const currentRankMatch = html.match(
+            /<small>CURRENT<\/small><br><img[^>]*src='([^']+ranked-league-rank-\d+\.png[^']*)'[^>]*\/>\s*([^<(]+)\s*\((\d+)\)/
+        );
+
+        const highestRankMatch = html.match(
+            /<small>HIGHEST<\/small><br><img[^>]*src='([^']+ranked-league-rank-\d+\.png[^']*)'[^>]*\/>\s*([^<(]+)\s*\((\d+)\)/
+        );
+
         res.setHeader("Access-Control-Allow-Origin", "*");
 
         res.json({
             current: currentMatch?.[1] || null,
-            highest: highestMatch?.[1] || null
+            highest: highestMatch?.[1] || null,
+
+            currentRank: currentRankMatch?.[2]?.trim() || null,
+            highestRank: highestRankMatch?.[2]?.trim() || null,
+
+            currentBadgeUrl: currentRankMatch?.[1] || null,
+            highestBadgeUrl: highestRankMatch?.[1] || null
         });
 
     } catch (err) {
