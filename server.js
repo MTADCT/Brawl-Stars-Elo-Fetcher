@@ -15,7 +15,7 @@ app.get("/elo/:tag", async (req, res) => {
         const tag = req.params.tag;
 
         const response = await axios.get(
-            `https://brawlace.com/players/%23${tag}`
+            `https://brawlace.com/players/%23${tag}`,
             {
                 headers: {
                     "User-Agent":
