@@ -16,6 +16,15 @@ app.get("/elo/:tag", async (req, res) => {
 
         const response = await axios.get(
             `https://brawlace.com/players/%23${tag}`
+            {
+                headers: {
+                    "User-Agent":
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+                    "Accept":
+                    "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                    "Accept-Language": "en-US,en;q=0.9"
+                }
+            }
         );
 
         const html = response.data;
@@ -51,6 +60,9 @@ app.get("/elo/:tag", async (req, res) => {
 
     } catch (err) {
         res.setHeader("Access-Control-Allow-Origin", "*");
+        console.error(err.response?.status);
+        console.error(err.response?.headers);
+        console.error(err.response?.data);
 
         res.status(500).json({
             error: err.message
