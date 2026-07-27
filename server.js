@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const axios = require("axios");
 
@@ -15,47 +17,27 @@ app.get("/elo/:tag", async (req, res) => {
         const tag = req.params.tag;
 
         const response = await axios.get(
-            `https://brawlace.com/players/%23${tag}`,
+            `https://api.brawlstars.com/v1/players/%23${tag}`,
             {
                 headers: {
-                    "User-Agent":
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
-                    "Accept":
-                    "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-                    "Accept-Language": "en-US,en;q=0.9"
+                    Authorization: `Bearer ${process.env.BRAWL_API_TOKEN}`
                 }
             }
         );
 
-        const html = response.data;
-
-        const currentMatch = html.match(
-            /CURRENT[\s\S]*?\((\d+)\)/
-        );
-
-        const highestMatch = html.match(
-            /HIGHEST[\s\S]*?\((\d+)\)/
-        );
-
-        const currentRankMatch = html.match(
-            /<small>CURRENT<\/small><br><img[^>]*src='([^']+ranked-league-rank-\d+\.png[^']*)'[^>]*\/>\s*([^<(]+)\s*\((\d+)\)/
-        );
-
-        const highestRankMatch = html.match(
-            /<small>HIGHEST<\/small><br><img[^>]*src='([^']+ranked-league-rank-\d+\.png[^']*)'[^>]*\/>\s*([^<(]+)\s*\((\d+)\)/
-        );
+        const player = response.data;
 
         res.setHeader("Access-Control-Allow-Origin", "*");
 
         res.json({
-            current: currentMatch?.[1] || null,
-            highest: highestMatch?.[1] || null,
+            current: player.rankedElo ?? null,
+            highest: player.highestAllTimeRankedElo ?? null,
 
-            currentRank: currentRankMatch?.[2]?.trim() || null,
-            highestRank: highestRankMatch?.[2]?.trim() || null,
+            currentRank: player.rankedRankName ?? null,
+            highestRank: player.highestAllTimeRankedRankName ?? null,
 
-            currentBadgeUrl: currentRankMatch?.[1] || null,
-            highestBadgeUrl: highestRankMatch?.[1] || null
+            currentBadge: player.rankedRank ?? null,
+            highestBadge: player.highestAllTimeRankedRank ?? null
         });
 
     } catch (err) {
