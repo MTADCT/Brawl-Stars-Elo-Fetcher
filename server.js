@@ -52,6 +52,15 @@ app.get("/elo/:tag", async (req, res) => {
     }
 });
 
+app.get("/myip", async (req, res) => {
+    try {
+        const response = await axios.get("https://api.ipify.org?format=json");
+        res.json(response.data);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
